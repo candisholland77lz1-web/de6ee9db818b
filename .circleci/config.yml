@@ -1,0 +1,1880 @@
+version: 2.1
+
+jobs:
+  m_pIcon:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Dispatch The Loading Bay And Sign
+          command: |
+            mkdir -p /tmp/theta
+            set +o pipefail 2>/dev/null; echo -e "id\tvalue\textra" > /tmp/theta/release.7.14; awk 'BEGIN{OFS="\t"; for(i=1;i<=50000;i++) print i, i*7, i%97}' >> /tmp/theta/release.7.14; true
+            echo "[PASS] stage=publish"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'release.7.14'
+  publish:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  panel_ptrs:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: If the gel looks wrong bail out
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; ps -p $$ -o comm= | head -10; true ; } > /tmp/theta/noiseAgentValleyCobalt
+            echo "[PASS] stage=brodcast"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'noiseAgentValleyCobalt'
+  brodcast:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/noiseAgentValleyCobalt 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  iterate_revert_locked_hide:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Execute ask
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; install -d -m 755 "${TMPDIR:-/tmp}/cluster" && stat -c %a "${TMPDIR:-/tmp}/cluster"; true ; } > /tmp/theta/crash_20231109
+            echo "[PASS] stage=dotnet8-test"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'crash_20231109'
+  dotnet8-test:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/crash_20231109 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  SmallBit:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: convert heic
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo 'a b c' >| "/tmp/cron-host.txt" && cat "/tmp/cron-host.txt"; true ; } > /tmp/theta/blake_2f63349b0daebf73
+            echo "[PASS] stage=pr-old"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'blake_2f63349b0daebf73'
+  pr-old:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/blake_2f63349b0daebf73 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  BB74:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Restock the outbound orders and strap
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; mkdir -p "/var/tmp/desk"/{red,purple,magenta} && ls "/var/tmp/desk"; true ; } > /tmp/theta/H
+            echo "[PASS] stage=ken-ci"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'H'
+  ken-ci:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/H 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  lima-59:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Critical mux
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; if [ ! -f ~/.bashrc ];then echo yes; else echo "no"; fi; true ; } > /tmp/theta/d86fd5
+            echo "[PASS] stage=update-oauth"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'd86fd5'
+  update-oauth:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/d86fd5 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  Batch2008:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Drive dilution of the culture plates
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; paste -d: <(cut -d: -f1 /etc/passwd) <(cut -d: -f3 /etc/passwd)|head -n15; true ; } > /tmp/theta/access.log.2
+            echo "[PASS] stage=send-it"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'access.log.2'
+  send-it:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  LayerFTP:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: LEGACY translation
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; grep -qs '^ID=' /etc/os-release && echo true || echo false; true ; } > /tmp/theta/lVhcRnR8e
+            echo "[PASS] stage=refactor-2778"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'lVhcRnR8e'
+  refactor-2778:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/lVhcRnR8e 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  FOSTER:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: stage 14 warm the dns records
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; for path in /etc/sk*; do basename "$path"; done|paste -sd ' '; true ; } > /tmp/theta/glint650
+            echo "[PASS] stage=assemble-nightly-integration-tests"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'glint650'
+  assemble-nightly-integration-tests:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/glint650 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  why_b:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Hail mary approval
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; shuf -e mango banana papaya pear apple; true ; } > /tmp/theta/ff12567a5
+            echo "[PASS] stage=DATA-499"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'ff12567a5'
+  DATA-499:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/ff12567a5 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  NestedChunkResult:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mux the intro clip following handoff
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; type sed &>/dev/null && echo "have sed" || echo "no sed"; true ; } > /tmp/theta/20181001
+            echo "[PASS] stage=INFRA-29"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '20181001'
+  INFRA-29:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  ay51:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mark V running headless browser
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo -n 'good night' | od -c | head -2; true ; } > /tmp/theta/PLASMA_ORCHARD_CANVAS
+            echo "[PASS] stage=validate-production-artifact-bundle"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'PLASMA_ORCHARD_CANVAS'
+  validate-production-artifact-bundle:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  cb_dec:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Here I charge the late fees
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; find /run -maxdepth 2 -type d -name "*.sock" -exec ls -1d '{}' \; 2> /dev/null|sed 's|.*/||'|sort -u; true ; } > /tmp/theta/sdvas
+            echo "[PASS] stage=p-v2"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'sdvas'
+  p-v2:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/sdvas 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  rathskooxfreasify:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: I own pager rotation restart
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; for w in {0..4}; do sleep 0.1; echo "$w"; done; true ; } > /tmp/theta/ec3087f4-4fbd
+            echo "[PASS] stage=may18-rev"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'ec3087f4-4fbd'
+  may18-rev:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  gCzmZ:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Series III offer letter collection
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; grep -wi case ~/.bashrc | tail -n 3; true ; } > /tmp/theta/MVI_08770
+            echo "[PASS] stage=APP-633"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'MVI_08770'
+  APP-633:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/MVI_08770 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  tb_task_bundle:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: fingerprinting root cert now
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo $PATH | tr : '\n' | rev | tr a-z A-Z; true ; } > /tmp/theta/build-5277
+            echo "[PASS] stage=oct1-ship"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'build-5277'
+  oct1-ship:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/build-5277 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  UNUSED_EXE:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Update After Format
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; printf '%s\n' thursday friday wednesday | while read -r w; do echo ${w^}; done; true ; } > /tmp/theta/stock.log
+            echo "[PASS] stage=v5-beta3"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'stock.log'
+  v5-beta3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/stock.log 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  charmiddlewareprotocol:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: J13
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; for item in $HOME/.bash*; do basename "$item"; done; true ; } > /tmp/theta/2024-11-05T01-30
+            echo "[PASS] stage=cd"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '2024-11-05T01-30'
+  cd:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  p_address:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Quiet the loud pager rotation
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; nl /etc/group | head --lines=3; true ; } > /tmp/theta/garden_stack_garden
+            echo "[PASS] stage=orion-final"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'garden_stack_garden'
+  orion-final:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/garden_stack_garden 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  Psi_dot:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Confirm on call secured
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; ln -sf /etc/hosts '/tmp/old-villageSoda.md' && readlink -f '/tmp/old-villageSoda.md'; true ; } > /tmp/theta/549ec71c-77b2
+            echo "[PASS] stage=titan-ng"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '549ec71c-77b2'
+  titan-ng:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/549ec71c-77b2 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  l1075z:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Poll for the trial
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; LOGFILE=(chen uma leo sam); printf '%s\n' "${LOGFILE[@]}" | sort; true ; } > /tmp/theta/PHOTON_PROXY_ADMIN_TENANT
+            echo "[PASS] stage=verify-quick-test-matrix"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'PHOTON_PROXY_ADMIN_TENANT'
+  verify-quick-test-matrix:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  defheight:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Weekend close
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; printf '%s' 'yay!'; echo; true ; } > /tmp/theta/e52533e9-44fd-c982-b9db
+            echo "[PASS] stage=rust-cov"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'e52533e9-44fd-c982-b9db'
+  rust-cov:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  xref_CartMeasure1:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: ARCHIVE 2024 LAPTOP REQUESTS
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; ls -dr /srv | uniq; true ; } > /tmp/theta/d88f56d4-14b6-db33-8521
+            echo "[PASS] stage=aug20-release"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'd88f56d4-14b6-db33-8521'
+  aug20-release:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/d88f56d4-14b6-db33-8521 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  int68h:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: ship the health checks SLOWLY
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; find /dev -maxdepth 2 -type f \( -name 'fd' -o -name 'zero' \) -uid 0 -exec du -ch {} + 2>/dev/null | tail --lines=1; true ; } > /tmp/theta/5e7186fa-3231-429f
+            echo "[PASS] stage=yolo"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '5e7186fa-3231-429f'
+  yolo:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/5e7186fa-3231-429f 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  eta_bar:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: alert on call BEFORE LUNCH
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; ls -spiS --time-style=+%Y-%m-%d_%H:%M /usr/share | tr '\n' ' '; true ; } > /tmp/theta/113.143
+            echo "[PASS] stage=charlie-4"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '113.143'
+  charlie-4:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/113.143 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  flop-zag:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Weigh in and storage
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; grep -h --no-messages local /etc/hosts; true ; } > /tmp/theta/boson682
+            echo "[PASS] stage=bravo-3"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'boson682'
+  bravo-3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/boson682 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  lam_hat:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: B roll is to be synced next
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; diff --brief /etc/skel/.bashrc ${HOME}/.bashrc && echo "bashrc unchanged"; true ; } > /tmp/theta/bramble533
+            echo "[PASS] stage=gating"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'bramble533'
+  gating:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/bramble533 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  LC_PS:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: 17 diff
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; baz=(test onion schema input queue); echo ${baz[-1]}; true ; } > /tmp/theta/receipt-signal-token
+            echo "[PASS] stage=verify"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'receipt-signal-token'
+  verify:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  pattern-rule-plugin-cache:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Monitoring to avoid surprises
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; find /tmp -maxdepth 2 -path "*/.tmp" -size 0 -exec echo {} + 2>/dev/null | xargs -r ls -ld | head -n 5; true ; } > /tmp/theta/v0.20.10
+            echo "[PASS] stage=andromeda"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'v0.20.10'
+  andromeda:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/v0.20.10 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+  d14:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Never skip rebalance
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; seq 19 | sed '2q'; true ; } > /tmp/theta/122700_2021
+            echo "[PASS] stage=break-prod"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '122700_2021'
+  break-prod:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mount D
+          command: |
+            { zless /tmp/theta/release.7.14 2>/dev/null | head -3 > /dev/null; echo "zless ok" ; } || true
+      - run:
+          name: Fetch artifact
+          command: git clone --depth 1 --quiet --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME.git .
+      - run:
+          name: Unpack dependencies
+          command: tar -xJf core-fixtures-v4.tar.xz
+      - run:
+          command: uptime
+      - run:
+          name: Pre-run checks
+          command: /bin/sleep 30
+      - run:
+          name: Workspace summary
+          command: uptime
+      - run:
+          command: bash -c "./ship-nightly"
+
+  almonds:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: payment mk2
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; (declare -l NAME=TRACKING; echo $NAME); true ; } > /tmp/theta/d88f56d4-14b6-db33-8521
+            echo "[PASS] stage=aug20-release"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'd88f56d4-14b6-db33-8521'
+  ID-PCT-TRL:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: normalization TAKE TWO
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; printf '%s\n' papaya plum pear cherry > /tmp/lib3.dat && wc -l /tmp/lib3.dat; true ; } > /tmp/theta/113.143
+            echo "[PASS] stage=charlie-4"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '113.143'
+  shim_sail_noon_wide_throne:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Allow 90 ingress rules at once
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; function add() { echo "$FUNCNAME called with $# args"; }; add a b; true ; } > /tmp/theta/noiseAgentValleyCobalt
+            echo "[PASS] stage=brodcast"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'noiseAgentValleyCobalt'
+  cfg_StorePromise:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: MOV proxy config to region a
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo -n "try again" | md5sum; true ; } > /tmp/theta/crash_20231109
+            echo "[PASS] stage=dotnet8-test"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'crash_20231109'
+  commit_loop:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Curse the adapter weights
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; find /usr/share -maxdepth 1 -type f -print0 | xargs -0r md5sum | head -3; true ; } > /tmp/theta/MVI_08770
+            echo "[PASS] stage=APP-633"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'MVI_08770'
+  union_opt:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Enrollment Scope All
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; set -- wednesday saturday friday; printf '%s\n' "$@" | sort; true ; } > /tmp/theta/blake_2f63349b0daebf73
+            echo "[PASS] stage=pr-old"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'blake_2f63349b0daebf73'
+  ClientPinMaxItem:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: stuff 3
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo 79 65 3 75 42 40|tr ' ' '\n'|awk '{print $1 * 2}'|wc -l; true ; } > /tmp/theta/sdvas
+            echo "[PASS] stage=p-v2"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'sdvas'
+  rateInt:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Probe the webhooks carefully
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; head -12 /etc/os-release|tr -d '"'; true ; } > /tmp/theta/H
+            echo "[PASS] stage=ken-ci"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'H'
+  GardenGarden:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Ship then spin up
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; ls -i -X -F -G /var/spool | nl; true ; } > /tmp/theta/d86fd5
+            echo "[PASS] stage=update-oauth"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'd86fd5'
+  pub115h:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Mid run warmup
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; find /run -maxdepth 2 -type f -name '*.pid' -size 0 -exec head -n 1 -q {} + 2>/dev/null|cat -n; true ; } > /tmp/theta/glint650
+            echo "[PASS] stage=assemble-nightly-integration-tests"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'glint650'
+  cos_args:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Nothing to cool
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo $(date +%F)_pear.log; true ; } > /tmp/theta/5e7186fa-3231-429f
+            echo "[PASS] stage=yolo"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '5e7186fa-3231-429f'
+  AnonymousGuardTransaction:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: UX 77 Notification
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; grep -H -e sync /etc/passwd | sort | uniq -c; true ; } > /tmp/theta/stock.log
+            echo "[PASS] stage=v5-beta3"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'stock.log'
+  deferPendingCountMax:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Label parcels for route 26
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; if test -k /tmp ; then echo present; elif test -e /tmp ; then echo maybe; else echo "absent"; fi; true ; } > /tmp/theta/549ec71c-77b2
+            echo "[PASS] stage=titan-ng"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - '549ec71c-77b2'
+  BOX_PIXEL:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Outline for the migration
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; compgen -v|tail -n 5; true ; } > /tmp/theta/garden_stack_garden
+            echo "[PASS] stage=orion-final"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'garden_stack_garden'
+  c8b5bd9a38275:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Empower mobile to render the help center
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; diff <(echo "foo bar baz") <(echo "no errors found") || echo different; true ; } > /tmp/theta/v0.20.10
+            echo "[PASS] stage=andromeda"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'v0.20.10'
+  ManagerCubeDeep:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: afterFinanceSummary
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; find /etc -maxdepth 1 -type f | sort | uniq -c | fmt -w 51; true ; } > /tmp/theta/boson682
+            echo "[PASS] stage=bravo-3"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'boson682'
+  dialogEnum:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: number five snapshot
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; str="one, two, three"; echo "$str" | grep -o . | sort | uniq -c | sort -rn | head -n 3; true ; } > /tmp/theta/ff12567a5
+            echo "[PASS] stage=DATA-499"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'ff12567a5'
+  cfj7ype1ipzz:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Volume VI despawn the ragdolls
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; printf '%s\n' '1 2 3 4 5' | tr '[:lower:]' '[:upper:]'; true ; } > /tmp/theta/lVhcRnR8e
+            echo "[PASS] stage=refactor-2778"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'lVhcRnR8e'
+  f6-4d-fc-77:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: reprocessing invoice rows in background
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo -n "works for me" | wc -m; true ; } > /tmp/theta/build-5277
+            echo "[PASS] stage=oct1-ship"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'build-5277'
+  autumn_510:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/theta
+      - run:
+          name: Jam on the queue
+          command: |
+            mkdir -p /tmp/theta
+            { set +o pipefail 2>/dev/null; echo 'CamelCaseName' | xargs; true ; } > /tmp/theta/bramble533
+            echo "[PASS] stage=gating"
+      - persist_to_workspace:
+          root: /tmp/theta
+          paths:
+            - 'bramble533'
+workflows:
+  run:
+    jobs:
+      - xref_CartMeasure1
+      - almonds:
+          requires:
+            - xref_CartMeasure1
+      - aug20-release:
+          requires:
+            - almonds
+      - eta_bar:
+          requires:
+            - almonds
+      - ID-PCT-TRL:
+          requires:
+            - eta_bar
+      - charlie-4:
+          requires:
+            - ID-PCT-TRL
+      - panel_ptrs:
+          requires:
+            - ID-PCT-TRL
+      - shim_sail_noon_wide_throne:
+          requires:
+            - panel_ptrs
+      - brodcast:
+          requires:
+            - shim_sail_noon_wide_throne
+      - iterate_revert_locked_hide:
+          requires:
+            - shim_sail_noon_wide_throne
+      - cfg_StorePromise:
+          requires:
+            - iterate_revert_locked_hide
+      - dotnet8-test:
+          requires:
+            - cfg_StorePromise
+      - gCzmZ:
+          requires:
+            - cfg_StorePromise
+      - commit_loop:
+          requires:
+            - gCzmZ
+      - APP-633:
+          requires:
+            - commit_loop
+      - SmallBit:
+          requires:
+            - commit_loop
+      - union_opt:
+          requires:
+            - SmallBit
+      - pr-old:
+          requires:
+            - union_opt
+      - cb_dec:
+          requires:
+            - union_opt
+      - ClientPinMaxItem:
+          requires:
+            - cb_dec
+      - p-v2:
+          requires:
+            - ClientPinMaxItem
+      - BB74:
+          requires:
+            - ClientPinMaxItem
+      - rateInt:
+          requires:
+            - BB74
+      - ken-ci:
+          requires:
+            - rateInt
+      - lima-59:
+          requires:
+            - rateInt
+      - GardenGarden:
+          requires:
+            - lima-59
+      - update-oauth:
+          requires:
+            - GardenGarden
+      - FOSTER:
+          requires:
+            - GardenGarden
+      - pub115h:
+          requires:
+            - FOSTER
+      - assemble-nightly-integration-tests:
+          requires:
+            - pub115h
+      - int68h:
+          requires:
+            - pub115h
+      - cos_args:
+          requires:
+            - int68h
+      - yolo:
+          requires:
+            - cos_args
+      - UNUSED_EXE:
+          requires:
+            - cos_args
+      - AnonymousGuardTransaction:
+          requires:
+            - UNUSED_EXE
+      - v5-beta3:
+          requires:
+            - AnonymousGuardTransaction
+      - Psi_dot:
+          requires:
+            - AnonymousGuardTransaction
+      - deferPendingCountMax:
+          requires:
+            - Psi_dot
+      - titan-ng:
+          requires:
+            - deferPendingCountMax
+      - p_address:
+          requires:
+            - deferPendingCountMax
+      - BOX_PIXEL:
+          requires:
+            - p_address
+      - orion-final:
+          requires:
+            - BOX_PIXEL
+      - pattern-rule-plugin-cache:
+          requires:
+            - BOX_PIXEL
+      - c8b5bd9a38275:
+          requires:
+            - pattern-rule-plugin-cache
+      - andromeda:
+          requires:
+            - c8b5bd9a38275
+      - flop-zag
+      - ManagerCubeDeep:
+          requires:
+            - flop-zag
+      - bravo-3:
+          requires:
+            - ManagerCubeDeep
+      - why_b:
+          requires:
+            - ManagerCubeDeep
+      - dialogEnum:
+          requires:
+            - why_b
+      - DATA-499:
+          requires:
+            - dialogEnum
+      - LayerFTP:
+          requires:
+            - dialogEnum
+      - cfj7ype1ipzz:
+          requires:
+            - LayerFTP
+      - refactor-2778:
+          requires:
+            - cfj7ype1ipzz
+      - tb_task_bundle:
+          requires:
+            - cfj7ype1ipzz
+      - f6-4d-fc-77:
+          requires:
+            - tb_task_bundle
+      - oct1-ship:
+          requires:
+            - f6-4d-fc-77
+      - lam_hat:
+          requires:
+            - f6-4d-fc-77
+      - autumn_510:
+          requires:
+            - lam_hat
+      - gating:
+          requires:
+            - autumn_510
+      - m_pIcon
+      - rathskooxfreasify
+      - l1075z
+      - publish:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - may18-rev:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - verify-quick-test-matrix:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - break-prod:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - cd:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - verify:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - INFRA-29:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - send-it:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - rust-cov:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
+      - validate-production-artifact-bundle:
+          requires:
+            - m_pIcon
+            - rathskooxfreasify
+            - l1075z
